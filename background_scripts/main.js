@@ -99,7 +99,7 @@ tabs.onHighlighted.addListener(({ tabIds }) => {
     if (!groups[groupid].syndicate_forum_tab) return;
     if (tabIds.length) tabIds = tabIds[0];
     if (groups[groupid].syndicate_forum_tab.id != tabIds) return;
-    tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tab);
+    tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tabs);
     groups[groupid].hidden = !groups[groupid].hidden;
   });
 });
