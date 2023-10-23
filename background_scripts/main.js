@@ -10,14 +10,10 @@ var groups = {};
 
 function CreateGroup(name, color) {
   const id = MenuIdFromTitle(name);
-
   if (!Object.keys(groups).length) CreateMenuItem("", { type: "separator" });
-
-  if (groups[id])
-    return console.warn("Group: " + name + " already exists: abort");
+  if (groups[id]) return console.warn(`Group: ${name} already exists: abort`);
 
   groups[id] = { name, color, tabs: [] };
-
   const svg = SVGCircleFromColor(color);
   CreateMenuItem(name, { icons: { 16: svg, 32: svg } });
   return id;
