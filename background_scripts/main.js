@@ -103,3 +103,14 @@ tabs.onHighlighted.addListener(({ tabIds }) => {
     groups[groupid].hidden = !groups[groupid].hidden;
   });
 });
+
+tabs.onMoved.addListener((tabid, { fromIndex, toIndex }) => {
+  Object.keys(groups).forEach((groupid) => {
+    if (!groups[groupid].syndicate_forum_tab) return;
+    if (groups[groupid].syndicate_forum_tab.id != tabid) return;
+
+    tabs.move(groups[groupid].tabs, {
+      index: toIndex + (fromIndex - toIndex > 0 ? +1 : 0),
+    });
+  });
+});
