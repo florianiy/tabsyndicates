@@ -1,0 +1,38 @@
+{
+  "manifest_version": 2,
+  "name": "TabSyndicates",
+  "author": "🌸 Floricica",
+  "description": "Imitate as much as you can from Chrome Tabs. Syndicate because [Tab]Groups.",
+  "version": "0.0.1",
+
+  "icons": {
+    "64": "icons/icon.png"
+  },
+  "permissions": ["storage", "scripting", "tabs", "<all_urls>", "menus"],
+  "background": {
+    "scripts": ["background_scripts/dep.js", "background_scripts/main.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["main_contentscript.js"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "64": "icons/icon.png"
+    },
+    "default_popup": "browserAction/index.html",
+    "default_title": "TabSyndicates"
+  },
+  "page_action": {
+    "default_icon": {
+      "64": "icons/icon.png"
+    },
+    "default_popup": "pageAction/index.html",
+    "default_title": "TabSyndicates"
+  },
+  "options_ui": {
+    "page": "options/index.html"
+  }
+}

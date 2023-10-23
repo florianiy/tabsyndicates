@@ -1,0 +1,31 @@
+
+v2: browser_action -> v3: action 
+browser_action == action == icon in toolbar
+page_action  == icon in URL bar
+https://discourse.mozilla.org/t/why-dont-i-see-my-page-action-in-my-addon/15552
+
+
+      // browser.tabs
+    //   .executeScript(syntab.id, {
+    //     file: "/content_scripts/forum.js",
+    //   })
+    //   .then(() => {
+
+
+sau astepti pana se coace checkul
+
+
+//
+///
+///
+// incoming
+
+// you have to wait until the js in that new tab/window is
+// ready to receive messages aka it has added the onMessage
+// eevent listener
+
+
+
+daca cineva nu asculta mesaje cand altu le trimite 
+
+Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist.
