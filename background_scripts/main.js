@@ -97,16 +97,9 @@ window.addEventListener("storage", async (opts) => {
 tabs.onHighlighted.addListener(({ tabIds }) => {
   Object.keys(groups).forEach((groupid) => {
     if (!groups[groupid].syndicate_forum_tab) return;
-
     if (tabIds.length) tabIds = tabIds[0];
-    if (groups[groupid].syndicate_forum_tab.id == tabIds) {
-      if (groups[groupid].hidden) {
-        browser.tabs.show(groups[groupid].tabs);
-        groups[groupid].hidden = false;
-      } else {
-        browser.tabs.hide(groups[groupid].tabs);
-        groups[groupid].hidden = true;
-      }
-    }
+    if (groups[groupid].syndicate_forum_tab.id != tabIds) return;
+    tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tab);
+    groups[groupid].hidden = !groups[groupid].hidden;
   });
 });
