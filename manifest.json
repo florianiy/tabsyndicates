@@ -8,7 +8,15 @@
   "icons": {
     "64": "icons/icon.png"
   },
-  "permissions": ["storage", "scripting", "tabs", "<all_urls>", "menus"],
+  "permissions": [
+    "storage",
+    "scripting",
+    "tabs",
+    "tabHide",
+    "tabShow",
+    "<all_urls>",
+    "menus"
+  ],
   "background": {
     "scripts": ["background_scripts/dep.js", "background_scripts/main.js"]
   },

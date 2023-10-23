@@ -39,7 +39,7 @@ function UpdateGroupForTab(tabid, groupid) {
   browser.tabs.sendMessage(tabid, JSON.stringify(msgToTab));
 }
 function ReorderSyndicates() {
-  Object.keys(groups).map((groupid) => {});
+  // Object.keys(groups).map((groupid) => {});
 }
 function CreateSyndicateForum(tabobj, groupid) {
   const url = "/SyndicateForum/index.html";
@@ -92,4 +92,21 @@ window.addEventListener("storage", async (opts) => {
   const groupid = CreateGroup(name, color);
   CreateSyndicateForum(last_tab_obj, groupid);
   UpdateGroupForTab(last_tab_id, groupid);
+});
+
+tabs.onHighlighted.addListener(({ tabIds }) => {
+  Object.keys(groups).forEach((groupid) => {
+    if (!groups[groupid].syndicate_forum_tab) return;
+
+    if (tabIds.length) tabIds = tabIds[0];
+    if (groups[groupid].syndicate_forum_tab.id == tabIds) {
+      if (groups[groupid].hidden) {
+        browser.tabs.show(groups[groupid].tabs);
+        groups[groupid].hidden = false;
+      } else {
+        browser.tabs.hide(groups[groupid].tabs);
+        groups[groupid].hidden = true;
+      }
+    }
+  });
 });
