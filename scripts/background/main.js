@@ -127,13 +127,31 @@ OnSyndicateForumFocus((gid, tid, ptid) => {
   });
 });
 
-function onMoveUpdate(tabid, { fromIndex, toIndex }) {
+function AreYouThere() {}
+
+function onMoveUpdateSyndicateForumsIndex(tabid, { fromIndex, toIndex }) {
+  // update quickly not asssync the forum if it was the case that it moved
+  // const tab = browser.tabs.get(tabid);
+  // Object.keys(groups).forEach((groupid) => {
+  //   if (groups[groupid].syndicate_forum_tab.id == tabid) {
+  //     console.log("foudya");
+  //     groups[groupid].syndicate_forum_tab = tab;
+  //     if (fromIndex < toIndex)
+  //       groups[groupid].syndicate_forum_tab.index =
+  //         toIndex - groups[groupid].tabs.length;
+  //     // because of the moving right issue with the tabs - this should be fixed soon
+  //     else groups[groupid].syndicate_forum_tab.index = toIndex;
+  //   }
+  // });
+
   browser.tabs.query({}).then((tabs) => {
     tabs.map((tab) => {
+      // update syndicate forum it it changed
       if (tab.id == tabid) {
         Object.keys(groups).forEach((groupid) => {
           if (groups[groupid].syndicate_forum_tab.id == tab.id) {
             console.log("foudya");
+            groups[groupid].syndicate_forum_tab = tab;
             if (fromIndex < toIndex)
               groups[groupid].syndicate_forum_tab.index =
                 toIndex - groups[groupid].tabs.length;
@@ -143,9 +161,42 @@ function onMoveUpdate(tabid, { fromIndex, toIndex }) {
         });
       }
     });
+
+    // update all syndicates - no matter cuz they might have been pushed also
+    // tabs.map((tab) => {
+    //   Object.keys(groups).forEach((gid) => {
+    //     if (tab == groups[gid].syndicate_forum_tab.id) {
+    //       groups[gid].syndicate_forum_tab = tab;
+    //     }
+    //   });
+    // });
   });
 }
 // browser.tabs.onCreated.addListener(Update);
 // browser.tabs.onActivated.addListener(Update);
-browser.tabs.onMoved.addListener(onMoveUpdate);
 // browser.tabs.onRemoved.addListener(Update);
+browser.tabs.onMoved.addListener(onMoveUpdateSyndicateForumsIndex);
+// browser.tabs.onMoved.addListener(onMoveOutOfBoundsRemoveFromSyndicate);
+
+function onMoveOutOfBoundsRemoveFromSyndicate(tabid, opts) {
+  const from = opts.fromIndex;
+  const to = opts.toIndex;
+
+  Object.keys(groups).forEach((gid) => {
+    groups[gid].tabs.forEach((_tabid) => {
+      if (_tabid == tabid) {
+        const si = groups[gid].syndicate_forum_tab;
+
+        if (si.index + groups[gid].tabs.length < to || to <= si.index) {
+          console.warn("outofbounds");
+
+          RemoveTabFromGroup(_tabid, gid);
+          browser.tabs.sendMessage(
+            _tabid,
+            JSON.stringify({ type: "restore-favicon" })
+          );
+        }
+      }
+    });
+  });
+}
