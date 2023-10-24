@@ -7,27 +7,21 @@ var groups = {};
 // important dependencies
 //
 ////
-var startup_freeze = true;
-
-function SaveGroups() {
-  if (!startup_freeze) store.set({ groups: { ...groups } });
-}
 
 function CreateGroup(name, color) {
   const id = MenuIdFromTitle(name);
   if (!Object.keys(groups).length) CreateMenuItem("", { type: "separator" });
-  if (!startup_freeze && groups[id])
-    return console.warn(`Group: ${name} already exists: abort`);
+
+  if (groups[id]) return console.warn(`Group: ${name} already exists: abort`);
 
   groups[id] = { name, color, tabs: [] };
   const svg = SVGCircleFromColor(color);
   CreateMenuItem(name, { icons: { 16: svg, 32: svg } });
-  SaveGroups();
+
   return id;
 }
 function RemoveTabFromGroup(tabid, groupid) {
   groups[groupid].tabs = groups[groupid].tabs.filter((it) => it != tabid);
-  SaveGroups();
 }
 
 function UpdateGroupForTab(tabid, groupid) {
@@ -41,8 +35,6 @@ function UpdateGroupForTab(tabid, groupid) {
   const svg = SVGCircleFromColor(groups[groupid].color);
   const msgToTab = { type: "update-group", svg };
   browser.tabs.sendMessage(tabid, JSON.stringify(msgToTab));
-
-  SaveGroups();
 }
 function ReorderSyndicates() {
   // Object.keys(groups).map((groupid) => {});
@@ -63,7 +55,6 @@ function CreateSyndicateForum(tabobj, groupid) {
         const name = groups[groupid].name;
         const msgToTab = { type: "update-syndicate-forum", svg, name, color };
         tabs.sendMessage(syntab.id, JSON.stringify(msgToTab));
-        SaveGroups();
       });
     ReorderSyndicates();
   });
@@ -115,20 +106,6 @@ window.addEventListener("storage", async (opts) => {
   UpdateGroupForTab(last_tab_id, groupid);
 });
 
-//should probablu use onActive instead
-// and there is a issue when movint the syndicate to right
-// not bug just does not feel ok
-// tabs.onHighlighted.addListener(({ tabIds }) => {
-//   Object.keys(groups).forEach((groupid) => {
-//     if (!groups[groupid].syndicate_forum_tab) return;
-//     if (tabIds.length) tabIds = tabIds[0];
-//     if (groups[groupid].syndicate_forum_tab.id != tabIds) return;
-//     tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tabs);
-//     groups[groupid].hidden = !groups[groupid].hidden;
-//   });
-//   SaveGroups();
-// });
-
 tabs.onMoved.addListener((tabid, { fromIndex, toIndex }) => {
   Object.keys(groups).forEach((groupid) => {
     if (!groups[groupid].syndicate_forum_tab) return;
@@ -138,13 +115,10 @@ tabs.onMoved.addListener((tabid, { fromIndex, toIndex }) => {
       index: toIndex + (fromIndex - toIndex > 0 ? +1 : 0),
     });
   });
-  SaveGroups();
 });
 
-// OnSyndicateForumClose(ToggleSyndicateHide);
 OnSyndicateForumFocus((gid, tid, ptid) => {
   ToggleSyndicateHide(gid, () => {
-    console.warn(groups[gid].syndicate_forum_tab.index);
     tabs.highlight({
       tabs: [
         groups[gid].syndicate_forum_tab.index + groups[gid].tabs.length + 1,
@@ -152,3 +126,26 @@ OnSyndicateForumFocus((gid, tid, ptid) => {
     });
   });
 });
+
+function onMoveUpdate(tabid, { fromIndex, toIndex }) {
+  browser.tabs.query({}).then((tabs) => {
+    tabs.map((tab) => {
+      if (tab.id == tabid) {
+        Object.keys(groups).forEach((groupid) => {
+          if (groups[groupid].syndicate_forum_tab.id == tab.id) {
+            console.log("foudya");
+            if (fromIndex < toIndex)
+              groups[groupid].syndicate_forum_tab.index =
+                toIndex - groups[groupid].tabs.length;
+            // because of the moving right issue with the tabs - this should be fixed soon
+            else groups[groupid].syndicate_forum_tab.index = toIndex;
+          }
+        });
+      }
+    });
+  });
+}
+// browser.tabs.onCreated.addListener(Update);
+// browser.tabs.onActivated.addListener(Update);
+browser.tabs.onMoved.addListener(onMoveUpdate);
+// browser.tabs.onRemoved.addListener(Update);

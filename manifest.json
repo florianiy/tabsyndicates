@@ -19,7 +19,11 @@
     "menus"
   ],
   "background": {
-    "scripts": ["./scripts/background/dep.js", "./scripts/background/main.js"]
+    "scripts": [
+      "./scripts/background/dep.js",
+      "./scripts/background/popup.js",
+      "./scripts/background/main.js"
+    ]
   },
   "content_scripts": [
     {

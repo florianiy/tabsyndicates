@@ -28,3 +28,6 @@ const UpdateUnderline = (color) =>
 UpdateUnderline(color_picker.value);
 
 name.focus();
+
+name.value = `bot<${crypto.randomUUID()}>`;
+name.onkeydown({ key: "Enter" });
