@@ -1,0 +1,8 @@
+
+
+rename la syndicate
+close the syndicate forum and reopen it
+so the close button will become the toggle for the syndicate
+
+make a function to revert to the previous favicons
+make the syndicate forum more complexx

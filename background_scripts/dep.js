@@ -1,6 +1,6 @@
 const ff = browser;
 const tabs = ff.tabs;
-const store = ff.tabs.local;
+const store = ff.storage.local;
 const menus = ff.menus;
 
 function CreateMenuItem(title, other = {}) {
