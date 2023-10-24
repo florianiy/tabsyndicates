@@ -38,8 +38,8 @@ function SVGCircleFromColor(color) {
   );
 }
 
-function ToggleSyndicateHide(groupid) {
-  tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tabs);
+function ToggleSyndicateHide(groupid, cb = () => {}) {
+  tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tabs).then(cb);
   groups[groupid].hidden = !groups[groupid].hidden;
 }
 
@@ -67,4 +67,12 @@ function OnSyndicateForumClose(cb) {
   });
 }
 
-function OnSyndicateForumFocus(cb) {}
+function OnSyndicateForumFocus(cb) {
+  tabs.onActivated.addListener(({ tabId, previousTabId }) => {
+    Object.keys(groups).forEach((groupid) => {
+      if (groups[groupid]?.syndicate_forum_tab?.id == tabId) {
+        cb(groupid, tabId, previousTabId);
+      }
+    });
+  });
+}

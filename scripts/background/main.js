@@ -141,5 +141,14 @@ tabs.onMoved.addListener((tabid, { fromIndex, toIndex }) => {
   SaveGroups();
 });
 
-// OnSyndicateForumCloseToggleSyndicateHide();
-OnSyndicateForumClose(ToggleSyndicateHide);
+// OnSyndicateForumClose(ToggleSyndicateHide);
+OnSyndicateForumFocus((gid, tid, ptid) => {
+  ToggleSyndicateHide(gid, () => {
+    console.warn(groups[gid].syndicate_forum_tab.index);
+    tabs.highlight({
+      tabs: [
+        groups[gid].syndicate_forum_tab.index + groups[gid].tabs.length + 1,
+      ],
+    });
+  });
+});
