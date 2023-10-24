@@ -6,8 +6,9 @@
   "version": "0.0.1",
 
   "icons": {
-    "64": "icons/icon.png"
+    "64": "res/default-icon.png"
   },
+
   "permissions": [
     "storage",
     "scripting",
@@ -18,29 +19,29 @@
     "menus"
   ],
   "background": {
-    "scripts": ["background_scripts/dep.js", "background_scripts/main.js"]
+    "scripts": ["./scripts/background/dep.js", "./scripts/background/main.js"]
   },
   "content_scripts": [
     {
       "matches": ["*://*/*"],
-      "js": ["main_contentscript.js"]
+      "js": ["./scripts/content/main.js"]
     }
   ],
   "browser_action": {
     "default_icon": {
-      "64": "icons/icon.png"
+      "64": "res/default-icon.png"
     },
-    "default_popup": "browserAction/index.html",
+    "default_popup": "./special_pages/browserAction/index.html",
     "default_title": "TabSyndicates"
   },
   "page_action": {
     "default_icon": {
-      "64": "icons/icon.png"
+      "64": "res/default-icon.png"
     },
-    "default_popup": "pageAction/index.html",
+    "default_popup": "./special_pages/pageAction/index.html",
     "default_title": "TabSyndicates"
   },
   "options_ui": {
-    "page": "options/index.html"
+    "page": "./special_pages/options/index.html"
   }
 }
