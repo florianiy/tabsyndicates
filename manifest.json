@@ -21,9 +21,11 @@
   ],
   "background": {
     "scripts": [
+      "./scripts/background/syndicate-board.js",
       "./scripts/background/dep.js",
       "./scripts/background/popup.js",
-      "./scripts/background/main.js"
+      "./scripts/background/main.js",
+      "./scripts/background/automation.js"
     ]
   },
   "content_scripts": [
