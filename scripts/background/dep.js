@@ -25,10 +25,13 @@ function StartGroupCreator() {
   });
 }
 
-function CreateTabs(num) {
+function CreateTabs(
+  num,
+  url = "https://www.google.com/search?client=firefox-b-d&q=asdasdasdasd"
+) {
   for (let i = 0; i < num; i++) {
     browser.tabs.create({
-      url: "https://ro.wikipedia.org/wiki/Pagina_principal%C4%83",
+      url,
     });
   }
 }
