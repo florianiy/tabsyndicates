@@ -22,6 +22,7 @@ browser.tabs.onMoved.addListener(MoveTabsWithTheirForum);
 browser.tabs.onMoved.addListener(onMoveUpdateSyndicateForumsIndex);
 browser.tabs.onMoved.addListener(onMoveOutOfBoundsRemoveFromSyndicate);
 browser.tabs.onMoved.addListener(onMoveInBoundsIncludeTabInSyndicate);
+browser.tabs.onRemoved.addListener(onTabRemovedDeleteRecords);
 
 OnSyndicateForumFocus((gid, tid, ptid) => {
   // if (!groups[gid].tabs.length)

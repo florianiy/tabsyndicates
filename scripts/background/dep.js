@@ -258,3 +258,19 @@ function onMoveInBoundsIncludeTabInSyndicate(tabid, { toIndex }) {
     }
   });
 }
+
+function onWindowClosing(cb) {
+  browser.tabs.onRemoved.addListener((_, { isWindowClosing }) => {
+    if (isWindowClosing) cb();
+  });
+}
+
+function onTabRemovedDeleteRecords(tabid, { isWindowClosing }) {
+  if (isWindowClosing) return;
+
+  Object.keys(groups).forEach((gid) => {
+    if (groups[gid].tabs.includes(tabid)) {
+      RemoveTabFromGroup(tabid, gid);
+    }
+  });
+}
