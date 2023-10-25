@@ -1,3 +1,7 @@
+// cand apesi click dreapta pe forumul de sindicat
+// sa apara itemuri in meniu speciale
+// cum e pe chrome: delete, edit, blabla
+
 // edit syndicate (color and name)
 // when create/edit syndicate make title of forum get updated real time and color
 // when dragging tab immediately after or between its tabs of a forum make the
