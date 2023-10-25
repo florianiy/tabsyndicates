@@ -95,22 +95,50 @@ menus.onClicked.addListener((info, tab) => {
     });
   }
 });
+
+localStorage.removeItem("last-closed");
+
 window.addEventListener("storage", async (opts) => {
   if (opts.key == "last-closed") return;
   const { color, name } = JSON.parse(opts.newValue);
+  console.log("%c" + name, "color:color");
   const groupid = CreateGroup(name, color);
+  window.automation_group_id = groupid;
   CreateSyndicateForum(last_tab_obj, groupid);
   UpdateGroupForTab(last_tab_id, groupid);
 });
 
+var fuck = false;
 tabs.onMoved.addListener((tabid, { fromIndex, toIndex }) => {
+  if (fuck) return (fuck = !fuck);
   Object.keys(groups).forEach((groupid) => {
     if (!groups[groupid].syndicate_forum_tab) return;
     if (groups[groupid].syndicate_forum_tab.id != tabid) return;
 
-    tabs.move(groups[groupid].tabs, {
-      index: toIndex + (fromIndex - toIndex > 0 ? +1 : 0),
-    });
+    var newIndex;
+    if (toIndex < fromIndex) newIndex = toIndex + 1;
+    else {
+      fuck = true;
+      return tabs
+        .move(groups[groupid].syndicate_forum_tab.id, {
+          index: fromIndex,
+        })
+        .then(() => {
+          fuck = true;
+
+          tabs.move(
+            [groups[groupid].syndicate_forum_tab.id, ...groups[groupid].tabs],
+            {
+              index: toIndex + groups[groupid].tabs.length,
+            }
+          );
+        });
+
+      // tabs.move(groups[groupid].tabs, { index: -1 });
+      // newIndex = toIndex;
+    }
+
+    tabs.move(groups[groupid].tabs, { index: newIndex });
   });
 });
 
@@ -124,24 +152,7 @@ OnSyndicateForumFocus((gid, tid, ptid) => {
   });
 });
 
-function AreYouThere() {}
-
 function onMoveUpdateSyndicateForumsIndex(tabid, { fromIndex, toIndex }) {
-  // update quickly not asssync the forum if it was the case that it moved
-  // florin from some future .get is not sync it is async
-  // const tab = browser.tabs.get(tabid);
-  // Object.keys(groups).forEach((groupid) => {
-  //   if (groups[groupid].syndicate_forum_tab.id == tabid) {
-  //     console.log("foudya");
-  //     groups[groupid].syndicate_forum_tab = tab;
-  //     if (fromIndex < toIndex)
-  //       groups[groupid].syndicate_forum_tab.index =
-  //         toIndex - groups[groupid].tabs.length;
-  //     // because of the moving right issue with the tabs - this should be fixed soon
-  //     else groups[groupid].syndicate_forum_tab.index = toIndex;
-  //   }
-  // });
-
   browser.tabs.query({}).then((tabs) => {
     tabs.map((tab) => {
       // update syndicate forum it it changed
@@ -159,23 +170,13 @@ function onMoveUpdateSyndicateForumsIndex(tabid, { fromIndex, toIndex }) {
         });
       }
     });
-
-    // update all syndicates - no matter cuz they might have been pushed also
-    // tabs.map((tab) => {
-    //   Object.keys(groups).forEach((gid) => {
-    //     if (tab == groups[gid].syndicate_forum_tab.id) {
-    //       groups[gid].syndicate_forum_tab = tab;
-    //     }
-    //   });
-    // });
   });
 }
 // browser.tabs.onCreated.addListener(Update);
 // browser.tabs.onActivated.addListener(Update);
 // browser.tabs.onRemoved.addListener(Update);
 browser.tabs.onMoved.addListener(onMoveUpdateSyndicateForumsIndex);
-// browser.tabs.onMoved.addListener(onMoveOutOfBoundsRemoveFromSyndicate);
-
+browser.tabs.onMoved.addListener(onMoveOutOfBoundsRemoveFromSyndicate);
 function onMoveOutOfBoundsRemoveFromSyndicate(tabid, opts) {
   const from = opts.fromIndex;
   const to = opts.toIndex;
@@ -183,20 +184,38 @@ function onMoveOutOfBoundsRemoveFromSyndicate(tabid, opts) {
   Object.keys(groups).forEach((gid) => {
     groups[gid].tabs.forEach((_tabid) => {
       if (_tabid == tabid) {
-        const si = groups[gid].syndicate_forum_tab;
+        browser.tabs.get(groups[gid].syndicate_forum_tab.id).then((tab) => {
+          groups[gid].syndicate_forum_tab = tab;
 
-        if (si.index + groups[gid].tabs.length < to || to <= si.index) {
-          console.warn("outofbounds");
+          const si = groups[gid].syndicate_forum_tab;
 
-          RemoveTabFromGroup(_tabid, gid);
-          browser.tabs.sendMessage(
-            _tabid,
-            JSON.stringify({ type: "restore-favicon" })
-          );
-        }
+          if (si.index + groups[gid].tabs.length < to || to <= si.index) {
+            console.warn("outofbounds");
+
+            RemoveTabFromGroup(_tabid, gid);
+            browser.tabs.sendMessage(
+              _tabid,
+              JSON.stringify({ type: "restore-favicon" })
+            );
+          }
+        });
       }
     });
   });
 }
 
 //
+
+browser.tabs.query({}).then((tabs) => {
+  last_tab_id = tabs[4].id;
+
+  last_tab_obj = tabs[4];
+  StartGroupCreator();
+  setTimeout(() => {
+    window.ttt = groups[automation_group_id].tabs;
+    UpdateGroupForTab(tabs[5].id, automation_group_id);
+    UpdateGroupForTab(tabs[6].id, automation_group_id);
+  }, 2000);
+});
+
+CreateTabs(4);
