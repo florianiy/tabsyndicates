@@ -54,7 +54,6 @@ function CreateSyndicateForum(tabobj, groupid) {
         const msgToTab = { type: "update-syndicate-forum", svg, name, color };
         tabs.sendMessage(syntab.id, JSON.stringify(msgToTab));
       });
-    ReorderSyndicates();
   });
 }
 
@@ -199,3 +198,5 @@ function onMoveOutOfBoundsRemoveFromSyndicate(tabid, opts) {
     });
   });
 }
+
+//
