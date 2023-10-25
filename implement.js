@@ -36,3 +36,12 @@ async function hasHostPermissionForActiveTab() {
     return false;
   }
 }
+
+`
+in loc de cerculet svg
+ia faviconul deja existent pe site-ul ala
+si baga-l in canvas si fai border cu culoarea
+syndicatului in jur
+gen doar imbrac-o in culoare ca border
+ca si cum ai face : border: 1px solid mov;
+`;
