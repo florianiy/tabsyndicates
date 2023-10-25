@@ -36,15 +36,13 @@ function UpdateGroupForTab(tabid, groupid) {
   const msgToTab = { type: "update-group", svg };
   browser.tabs.sendMessage(tabid, JSON.stringify(msgToTab));
 }
-function ReorderSyndicates() {
-  // Object.keys(groups).map((groupid) => {});
-}
+
 function CreateSyndicateForum(tabobj, groupid) {
   const url = "/SyndicateForum/index.html";
 
   tabs.create({ url, index: tabobj.index }).then((syntab) => {
     groups[groupid].syndicate_forum_tab = syntab;
-
+    tabs.highlight({ tabs: [tabobj.index + 1] });
     browser.tabs
       .executeScript(syntab.id, {
         file: "/SyndicateForum/main.js",
@@ -131,6 +129,7 @@ function AreYouThere() {}
 
 function onMoveUpdateSyndicateForumsIndex(tabid, { fromIndex, toIndex }) {
   // update quickly not asssync the forum if it was the case that it moved
+  // florin from some future .get is not sync it is async
   // const tab = browser.tabs.get(tabid);
   // Object.keys(groups).forEach((groupid) => {
   //   if (groups[groupid].syndicate_forum_tab.id == tabid) {
