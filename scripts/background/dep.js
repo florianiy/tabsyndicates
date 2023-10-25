@@ -25,6 +25,14 @@ function StartGroupCreator() {
   });
 }
 
+function CreateTabs(num) {
+  for (let i = 0; i < num; i++) {
+    browser.tabs.create({
+      url: "https://ro.wikipedia.org/wiki/Pagina_principal%C4%83",
+    });
+  }
+}
+
 function MenuIdFromTitle(name) {
   return name.replaceAll(" ", "_");
 }
