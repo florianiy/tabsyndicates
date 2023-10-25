@@ -1,3 +1,8 @@
+// edit syndicate (color and name)
+// when create/edit syndicate make title of forum get updated real time and color
+// when dragging tab immediately after or between its tabs of a forum make the
+// // tab join that syndicate [but only when syndicate is not hidden]
+
 `
 listen for tab close to potentially remove it from any group
 
