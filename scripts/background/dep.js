@@ -122,7 +122,11 @@ function RemoveTabFromGroup(tabid, groupid) {
 }
 
 function ToggleSyndicateHide(groupid, cb = () => {}) {
-  tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tabs).then(cb);
+  tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tabs)
+    .then(cb)
+    .catch(() => {
+      console.log("togle hide, invalid tab id");
+    });
   groups[groupid].hidden = !groups[groupid].hidden;
 }
 
