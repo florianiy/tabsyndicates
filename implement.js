@@ -1,5 +1,8 @@
-// cand apesi click dreapta pe forumul de sindicat
-// sa apara itemuri in meniu speciale
+`
+incearca sa dai hide la toate taburile
+sa le aranjezi cand ele sunt cu hide
+si sa le dai show after le-ai mutat
+`// sa apara itemuri in meniu speciale // cand apesi click dreapta pe forumul de sindicat
 // cum e pe chrome: delete, edit, blabla
 
 // edit syndicate (color and name)
@@ -45,3 +48,10 @@ syndicatului in jur
 gen doar imbrac-o in culoare ca border
 ca si cum ai face : border: 1px solid mov;
 `;
+
+// for future
+// browser.menus.onShown.addListener(async (info, tab) => {
+//   browser.menus.update(menuId /*, …*/);
+//   // Note: Not waiting for returned promise.
+//   browser.menus.refresh();
+// });
