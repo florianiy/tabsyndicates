@@ -27,12 +27,15 @@ function StartGroupCreator() {
 
 function CreateTabs(
   num,
-  url = "https://www.google.com/search?client=firefox-b-d&q=asdasdasdasd"
+  url = "https://www.google.com/search?client=firefox-b-d&q=asdasdasdasd",
+  cb = () => {}
 ) {
   for (let i = 0; i < num; i++) {
-    browser.tabs.create({
-      url,
-    });
+    browser.tabs
+      .create({
+        url,
+      })
+      .then(cb);
   }
 }
 

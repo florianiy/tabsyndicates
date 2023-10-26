@@ -80,3 +80,5 @@ OnSyndicateForumFocus((gid, tid, ptid) => {
 browser.runtime.onUpdateAvailable.addListener(() =>
   console.log("update available")
 );
+
+// OnSyndicateForumClose(ToggleSyndicateHide);

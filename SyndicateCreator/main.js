@@ -29,5 +29,5 @@ UpdateUnderline(color_picker.value);
 
 name.focus();
 
-name.value = `bot<${crypto.randomUUID()}>`;
-name.onkeydown({ key: "Enter" });
+// name.value = `bot<${crypto.randomUUID()}>`;
+// name.onkeydown({ key: "Enter" });
