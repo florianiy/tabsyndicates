@@ -1,3 +1,6 @@
+strange
+https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/contextualIdentities/ContextualIdentity#colorcode
+
 individual highlight property
 https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/update#highlighted
 

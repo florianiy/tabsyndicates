@@ -1,0 +1,4 @@
+contextualIdentities[containers] issues
+- cookies are not shared outside
+- only 10 colors to chose
+- have to recreate tab just to assign it to the container
