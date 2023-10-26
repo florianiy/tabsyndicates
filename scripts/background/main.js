@@ -24,6 +24,16 @@ browser.tabs.onMoved.addListener(onMoveOutOfBoundsRemoveFromSyndicate);
 browser.tabs.onMoved.addListener(onMoveInBoundsIncludeTabInSyndicate);
 browser.tabs.onRemoved.addListener(onTabRemovedDeleteRecords);
 
+// seems that this is triggered when the extension loads
+// onWindowClosing(() => {
+//   console.warn("window is closing", groups);
+//   Object.keys(groups).forEach((gid) => {
+//     browser.tabs.remove(groups[gid].tabs);
+//     browser.tabs.remove(groups[gid].syndicate_forum_tab.id);
+//   });
+
+// });
+
 OnSyndicateForumFocus((gid, tid, ptid) => {
   // if (!groups[gid].tabs.length)
   //   return console.warn("closed forum due to inactivity");
@@ -31,10 +41,8 @@ OnSyndicateForumFocus((gid, tid, ptid) => {
 
   ToggleSyndicateHide(gid, () => {
     // highlight next after the group
-    console.log("asd");
     const index =
       groups[gid].syndicate_forum_tab.index + groups[gid].tabs.length + 1;
-    console.warn(gid + " focus this" + index);
     tabs.highlight({
       tabs: [index],
     });
@@ -68,3 +76,7 @@ OnSyndicateForumFocus((gid, tid, ptid) => {
 // browser.tabs.onRemoved.addListener(Update);
 
 //
+//
+browser.runtime.onUpdateAvailable.addListener(() =>
+  console.log("update available")
+);

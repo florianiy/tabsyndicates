@@ -72,12 +72,14 @@ function SVGCircleFromColor(color) {
 }
 
 function CreateSyndicateForum(tabobj, groupid) {
-  const url = "/SyndicateForum/index.html";
+  const opts = { url: "/SyndicateForum/index.html", index: tabobj.index };
 
-  tabs.create({ url, index: tabobj.index }).then((syntab) => {
+  tabs.create(opts).then((syntab) => {
     groups[groupid].syndicate_forum_tab = syntab;
     tabs.highlight({ tabs: [tabobj.index + 1] });
+
     browser.tabs
+
       .executeScript(syntab.id, {
         file: "/SyndicateForum/main.js",
       })
@@ -227,7 +229,6 @@ function onMoveOutOfBoundsRemoveFromSyndicate(tabid, opts) {
   Object.keys(groups).forEach((gid) => {
     groups[gid].tabs.forEach((_tabid) => {
       if (_tabid == tabid) {
-        console.error(groups[gid].syndicate_forum_tab.id);
         browser.tabs.get(groups[gid].syndicate_forum_tab.id).then((tab) => {
           groups[gid].syndicate_forum_tab = tab;
 
