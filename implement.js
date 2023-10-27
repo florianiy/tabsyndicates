@@ -1,13 +1,17 @@
 `
+cand muti syndicatul ascunde celelate syndicate si pastreazaa doar forumurile
+
+fa-i aia cu highlight la toate taburile din grup cand muti syndicate forumul
+fa-i savev across load/reload browser
+fa-i sa mute in nou window tot grupul
+repara bugurile cu nu poate sa dea focus ca e prea in dreapta
+ca boti asocia forum ca membru in alt tab etc
+
+``
 incearca sa dai hide la toate taburile
 sa le aranjezi cand ele sunt cu hide
 si sa le dai show after le-ai mutat
-`// sa apara itemuri in meniu speciale // cand apesi click dreapta pe forumul de sindicat
-// cum e pe chrome: delete, edit, blabla
-
-// edit syndicate (color and name)
-// when create/edit syndicate make title of forum get updated real time and color
-// when dragging tab immediately after or between its tabs of a forum make the
+`// when dragging tab immediately after or between its tabs of a forum make the // when create/edit syndicate make title of forum get updated real time and color // edit syndicate (color and name) // cum e pe chrome: delete, edit, blabla // sa apara itemuri in meniu speciale // cand apesi click dreapta pe forumul de sindicat
 // // tab join that syndicate [but only when syndicate is not hidden]
 
 `

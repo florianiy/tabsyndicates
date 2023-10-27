@@ -65,22 +65,35 @@ function OnMenuItemClicked(info, tab) {
   }
 }
 
-// function SVGCircleFromColor(color) {
-//   return (
-//     "data:image/svg+xml;base64," +
-//     btoa(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-//     <circle fill="${color}" cx="50" cy="50" r="50" />
-//   </svg>`)
-//   );
-// }
+function SVGCircle(color) {
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle fill="${color}" cx="50" cy="50" r="50" />
+  </svg>`;
+}
 
-function SVGCircleFromColor(color) {
-  return (
-    "data:image/svg+xml;base64," +
-    btoa(`<?xml version="1.0" encoding="iso-8859-1"?>
-    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-    <svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-       viewBox="0 0 512 512" xml:space="preserve">
+function SVGForum(color) {
+  return `
+<svg height="100%" width="100%" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+<g id="SVGRepo_iconCarrier">
+  <path fill-rule="evenodd" clip-rule="evenodd"
+    d="M20 32C28.8366 32 36 26.6274 36 20C36 13.3726 28.8366 8 20 8C11.1634 8 4 13.3726 4 20C4 22.6842 5.17509 25.1626 7.16049 27.1616C6.35561 29.4537 5.31284 31.1723 4.6499 32.1319C4.4071 32.4834 4.65714 32.9802 5.08289 32.9453C6.78453 32.8058 10.1224 32.3105 12.3741 30.5519C14.6411 31.4754 17.2389 32 20 32Z"
+    fill="${color}" style="filter: hue-rotate(180deg);"></path>
+  <path fill-rule="evenodd" clip-rule="evenodd"
+    d="M22.7843 33.8337C31.4033 32.7928 38 26.9957 38 20.0002C38 19.4632 37.9611 18.9333 37.8855 18.4121C41.5534 20.1003 44 23.136 44 26.6002C44 28.7476 43.0599 30.7303 41.4716 32.3295C42.068 34.0278 42.8276 35.3325 43.3579 36.1259C43.5953 36.481 43.3423 36.9779 42.917 36.9372C41.5041 36.8021 39.0109 36.3773 37.3007 35.0418C35.4872 35.7806 33.4089 36.2002 31.2 36.2002C27.9781 36.2002 25.0343 35.3074 22.7843 33.8337Z"
+    fill="${color}" style="filter: hue-rotate(180deg);"></path>
+</g>
+</svg>
+`;
+}
+function SVGCarrot(color) {
+  return `
+    
+  <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+  <svg height="100%" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    viewBox="0 0 512 512" xml:space="preserve">
     <path style="fill:#A9CF54;" d="M293.094,113.549c-14.973,19.853-22.019,42.469-22.019,42.469L256,154.551l-15.075,1.468
       c0,0-7.046-22.617-22.019-42.47s-63.739-42.151-42.841-71.053c20.898-28.912,55.38,6.614,55.38,6.614
       C230.055,9.404,256,7.837,256,7.837s25.945,1.567,24.555,41.273c0,0,34.482-35.527,55.38-6.614
@@ -129,6 +142,15 @@ function SVGCircleFromColor(color) {
       c2.257,2.326,5.714,3.022,8.695,1.751s4.873-4.245,4.761-7.484C238.282,20.432,252.487,16.313,256,15.731
       c3.512,0.582,17.717,4.701,16.724,33.105c-0.113,3.234,1.777,6.2,4.752,7.473c2.977,1.272,6.43,0.583,8.694-1.731
       c4.513-4.618,18.804-16.41,30.657-15.533c4.938,0.367,9.11,2.997,12.758,8.043C338.712,59.712,329.976,70.428,306.943,89.674z"/>
+    </svg>
+`;
+}
+function IconFromSVGs(list) {
+  return (
+    "data:image/svg+xml;base64," +
+    btoa(`<?xml version="1.0" encoding="iso-8859-1"?>
+    <svg xmlns="http://www.w3.org/2000/svg">
+      ${list.join("\n")}
     </svg>`)
   );
 }
@@ -146,7 +168,7 @@ function CreateSyndicateForum(tabobj, groupid) {
       })
       .then(() => {
         const color = groups[groupid].color;
-        const svg = SVGCircleFromColor(color);
+        const svg = IconFromSVGs([SVGForum(color), SVGCarrot(color)]);
         const name = groups[groupid].name;
         const msgToTab = { type: "update-syndicate-forum", svg, name, color };
         tabs.sendMessage(syntab.id, JSON.stringify(msgToTab));
@@ -161,7 +183,7 @@ function CreateGroup(name, color) {
   if (groups[id]) return console.warn(`Group: ${name} already exists: abort`);
 
   groups[id] = { name, color, tabs: [] };
-  const svg = SVGCircleFromColor(color);
+  const svg = IconFromSVGs([SVGCarrot(color)]);
   CreateMenuItem(name, { icons: { 16: svg, 32: svg } });
 
   return id;
@@ -175,7 +197,7 @@ function UpdateGroupForTab(tabid, groupid) {
 
   groups[groupid].tabs.push(tabid);
 
-  const svg = SVGCircleFromColor(groups[groupid].color);
+  const svg = IconFromSVGs([SVGCarrot(groups[groupid].color)]);
   const msgToTab = { type: "update-group", svg };
   browser.tabs.sendMessage(tabid, JSON.stringify(msgToTab));
 }
