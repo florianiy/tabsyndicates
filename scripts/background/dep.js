@@ -210,7 +210,7 @@ function ToggleSyndicateHide(groupid) {
   const _tabs = groups[groupid].tabs;
   var i = 0;
 
-  var time = groups[groupid]?.show_hide_delay || 700;
+  var time = groups[groupid]?.show_hide_delay || 300;
 
   if (groups[groupid].hidden) {
     tabs.show(_tabs[i++]).catch(() => {
@@ -274,8 +274,14 @@ function OnSyndicateForumFocus(cb) {
 }
 
 var fuck = false;
+var highlight_fuck = false;
 function MoveTabsWithTheirForum(tabid, { fromIndex, toIndex }) {
+  console.log("moved");
   if (fuck) return (fuck = !fuck);
+  console.log("fuck" + fuck);
+  if (highlight_fuck) return;
+  console.log("highlight_fuck" + highlight_fuck);
+
   Object.keys(groups).forEach((groupid) => {
     if (!groups[groupid].syndicate_forum_tab) return;
     if (groups[groupid].syndicate_forum_tab.id != tabid) return;

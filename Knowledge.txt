@@ -29,3 +29,7 @@ sau astepti pana se coace checkul
 daca cineva nu asculta mesaje cand altu le trimite 
 
 Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist.
+
+
+cand deschizi context menu, firefox daca apesi pe tastatura da highlight la comanda care incepe cu 
+litera care ai apasat=o

@@ -24,6 +24,44 @@ browser.tabs.onMoved.addListener(onMoveOutOfBoundsRemoveFromSyndicate);
 browser.tabs.onMoved.addListener(onMoveInBoundsIncludeTabInSyndicate);
 browser.tabs.onRemoved.addListener(onTabRemovedDeleteRecords);
 
+var last_highlight = [];
+var triggered_by_me = false;
+browser.tabs.onHighlighted.addListener(({ tabIds, windowId }) => {
+  if (triggered_by_me) return (triggered_by_me = !triggered_by_me);
+  console.log("highglight");
+  if (JSON.stringify(last_highlight) == JSON.stringify(tabIds)) {
+    highlight_fuck = true;
+    return console.log("just focus changed, not highilight");
+  }
+  last_highlight = tabIds;
+  console.log("real highligjht");
+  console.log(tabIds);
+
+  if (tabIds.length != 2) {
+    highlight_fuck = false;
+    return console.log(tabIds.length + " tabs");
+  }
+
+  var arr = [];
+
+  Object.keys(groups).forEach((gid) => {
+    const sid = groups[gid].syndicate_forum_tab.id;
+    if (!tabIds.includes(sid))
+      return console.log(`forum {${sid}} is not hightlighed`);
+    console.log("highlighted");
+
+    const sindex = groups[gid].syndicate_forum_tab.index;
+    for (let i = sindex + groups[gid].tabs.length; i > sindex; i--) {
+      arr.push(i);
+    }
+    arr.push(sindex);
+  });
+  highlight_fuck = !!arr.length;
+  triggered_by_me = !!arr.length;
+  tabs.highlight({ tabs: arr }).catch(() => {
+    console.log("highlight fuck");
+  });
+});
 // seems that this is triggered when the extension loads
 // onWindowClosing(() => {
 //   console.warn("window is closing", groups);
