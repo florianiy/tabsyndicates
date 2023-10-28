@@ -1,4 +1,13 @@
 `
+
+e bugul ala ca dispar taburi uneori vezi cum poti sa dai exploit la asta
+
+
+sa se invarta un morcov ca loading stuff
+si sa arate drept asa ----> daca sunt deschise
+si in sus daca sunt inchise
+
+
 poate e mai bine sa pui toggle pe rotita
 si drag pe mouse click and drag
 
