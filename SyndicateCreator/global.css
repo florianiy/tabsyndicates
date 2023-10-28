@@ -1,6 +1,7 @@
 body {
-  color: rgb(251, 251, 254);
-  background-color: rgb(43, 42, 51);
+  color: rgb(91, 91, 102);
+  background-color: rgb(249, 249, 251);
+
   border-color: solid;
   display: flex;
   flex-direction: column;
@@ -38,4 +39,8 @@ input[type="color"] {
 }
 
 @media (prefers-color-scheme: dark) {
+  body {
+    color: rgb(251, 251, 254);
+    background-color: rgb(43, 42, 51);
+  }
 }

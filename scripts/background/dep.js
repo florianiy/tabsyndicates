@@ -17,10 +17,17 @@ function CreateMenuItem(title, other = {}) {
 
 function StartGroupCreator() {
   browser.windows.create({
-    url: "/SyndicateCreator/index.html",
+    // url: "/SyndicateCreator/index.html",
+    url: [
+      "/SyndicateCreator/index.html",
+      // "/SyndicateCreator/index.html",
+      // "/SyndicateCreator/index.html",
+      // "/SyndicateCreator/index.html",
+    ],
     type: "popup",
     height: 150,
     width: 250,
+    titlePreface: "New Group -",
     allowScriptsToClose: true,
   });
 }
@@ -44,11 +51,21 @@ function MenuIdFromTitle(name) {
 }
 
 function OnMenuItemClicked(info, tab) {
-  last_tab_id = tab.id;
-  last_tab_obj = tab;
-
-  if (add_to_group_id == info.menuItemId) StartGroupCreator();
-  else if (restore_favicon == info.menuItemId) {
+  if (add_to_group_id == info.menuItemId) {
+    const popi = new Popup("/SyndicateCreator/index.html");
+    popi.Open((port) => {
+      port.onMessage.addListener((obj) => {
+        console.warn("item clicked", obj);
+        const { color, name } = obj;
+        console.log("%c" + name, "color:color");
+        const groupid = CreateGroup(name, color);
+        CreateSyndicateForum(tab, groupid);
+        UpdateGroupForTab(tab.id, groupid);
+        popi.Close();
+        delete popi;
+      });
+    });
+  } else if (restore_favicon == info.menuItemId) {
     browser.tabs.sendMessage(
       tab.id,
       JSON.stringify({ type: "restore-favicon" })
@@ -156,17 +173,24 @@ function IconFromSVGs(list) {
 }
 function CreateSyndicateForum(tabobj, groupid) {
   const opts = { url: "/SyndicateForum/index.html", index: tabobj.index };
+  console.log(tabobj);
 
   tabs.create(opts).then((syntab) => {
     groups[groupid].syndicate_forum_tab = syntab;
-    tabs.highlight({ tabs: [tabobj.index + 1] });
+
+    console.log(groups[groupid]);
 
     browser.tabs
-
       .executeScript(syntab.id, {
         file: "/SyndicateForum/main.js",
       })
       .then(() => {
+        // why here, cuz in the scope before it does not work
+        tabs
+          .highlight({ tabs: [tabobj.index + 1] })
+          .catch(() =>
+            console.log("highlight first member", [tabobj.index + 1])
+          );
         const color = groups[groupid].color;
         const svg = IconFromSVGs([SVGForum(color), SVGCarrot(color)]);
         const name = groups[groupid].name;
@@ -297,12 +321,14 @@ function MoveTabsWithTheirForum(tabid, { fromIndex, toIndex }) {
         .then(() => {
           fuck = true;
 
-          tabs.move(
-            [groups[groupid].syndicate_forum_tab.id, ...groups[groupid].tabs],
-            {
-              index: toIndex + groups[groupid].tabs.length,
-            }
-          );
+          tabs
+            .move(
+              [groups[groupid].syndicate_forum_tab.id, ...groups[groupid].tabs],
+              {
+                index: toIndex + groups[groupid].tabs.length,
+              }
+            )
+            .then(() => (fuck = true));
         });
 
       // tabs.move(groups[groupid].tabs, { index: -1 });
@@ -385,5 +411,44 @@ function onTabRemovedDeleteRecords(tabid, { isWindowClosing }) {
     if (groups[gid].tabs.includes(tabid)) {
       RemoveTabFromGroup(tabid, gid);
     }
+  });
+}
+
+var last_highlight = [];
+var triggered_by_me = false;
+function onHighlightedSelectEntireSyndicate({ tabIds, windowId }) {
+  if (triggered_by_me) return (triggered_by_me = !triggered_by_me);
+  console.log("highglight");
+  if (JSON.stringify(last_highlight) == JSON.stringify(tabIds)) {
+    highlight_fuck = true;
+    return console.log("just focus changed, not highilight");
+  }
+  last_highlight = tabIds;
+  console.log("real highligjht");
+  console.log(tabIds);
+
+  if (tabIds.length != 2) {
+    highlight_fuck = false;
+    return console.log(tabIds.length + " tabs");
+  }
+
+  var arr = [];
+
+  Object.keys(groups).forEach((gid) => {
+    const sid = groups[gid].syndicate_forum_tab.id;
+    if (!tabIds.includes(sid))
+      return console.log(`forum {${sid}} is not hightlighed`);
+    console.log("highlighted");
+
+    const sindex = groups[gid].syndicate_forum_tab.index;
+    for (let i = sindex + groups[gid].tabs.length; i > sindex; i--) {
+      arr.push(i);
+    }
+    arr.push(sindex);
+  });
+  highlight_fuck = !!arr.length;
+  triggered_by_me = !!arr.length;
+  tabs.highlight({ tabs: arr }).catch(() => {
+    console.log("highlight fuck");
   });
 }

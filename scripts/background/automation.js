@@ -30,9 +30,10 @@ function AutomaticCreateSyndicateWithMembers(tabs) {
   }
 }
 
-browser.tabs.query({}).then(main_automate);
 function main_automate(tabs) {
   if (tabs.length < 30)
     CreateTabs(syndicate_decisions.AUTOMATION.TAB_CREATION_PER_LOAD || 0);
   AutomaticCreateSyndicateWithMembers(tabs);
 }
+
+// browser.tabs.query({}).then(main_automate);
