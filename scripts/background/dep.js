@@ -15,23 +15,6 @@ function CreateMenuItem(title, other = {}) {
   return id;
 }
 
-function StartGroupCreator() {
-  browser.windows.create({
-    // url: "/SyndicateCreator/index.html",
-    url: [
-      "/SyndicateCreator/index.html",
-      // "/SyndicateCreator/index.html",
-      // "/SyndicateCreator/index.html",
-      // "/SyndicateCreator/index.html",
-    ],
-    type: "popup",
-    height: 150,
-    width: 250,
-    titlePreface: "New Group -",
-    allowScriptsToClose: true,
-  });
-}
-
 function CreateTabs(
   num,
   url = "https://www.google.com/search?client=firefox-b-d&q=asdasdasdasd",
@@ -50,21 +33,31 @@ function MenuIdFromTitle(name) {
   return name.replaceAll(" ", "_");
 }
 
+function CreateForumAndFirstMember(tab, cb = () => {}) {
+  const popi = new Popup("/SyndicateCreator/index.html");
+  popi.Open((port) => {
+    port.onMessage.addListener((obj) => {
+      console.warn("item clicked", obj);
+      const { color, name } = obj;
+      console.log("%c" + name, "color:color");
+      const groupid = CreateGroup(name, color);
+      CreateSyndicateForum(tab, groupid);
+      UpdateGroupForTab(tab.id, groupid);
+      cb(groupid);
+      popi.Close();
+      delete popi;
+    });
+  });
+}
+
 function OnMenuItemClicked(info, tab) {
   if (add_to_group_id == info.menuItemId) {
-    const popi = new Popup("/SyndicateCreator/index.html");
-    popi.Open((port) => {
-      port.onMessage.addListener((obj) => {
-        console.warn("item clicked", obj);
-        const { color, name } = obj;
-        console.log("%c" + name, "color:color");
-        const groupid = CreateGroup(name, color);
-        CreateSyndicateForum(tab, groupid);
-        UpdateGroupForTab(tab.id, groupid);
-        popi.Close();
-        delete popi;
-      });
-    });
+    CreateForumAndFirstMember(tab);
+  } else if (spin_forever == info.menuItemId) {
+    SpinAroundInfinetely(
+      tab.id,
+      "#" + Math.round(Math.random() * 16777216).toString(16)
+    );
   } else if (restore_favicon == info.menuItemId) {
     browser.tabs.sendMessage(
       tab.id,
@@ -82,9 +75,19 @@ function OnMenuItemClicked(info, tab) {
   }
 }
 
-function SVGCircle(color) {
+function SVGRotate(SVG, degrees) {
+  return `
+  <g transform="rotate(${degrees},100, 100)"> \n${SVG}\n</g>`;
+}
+function SVGRotateNoG(SVG, degrees) {
+  return SVG.replace("<svg", `<svg transform="rotate(${degrees})"`);
+}
+
+function SVGCircle(color, cool = false) {
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <circle fill="${color}" cx="50" cy="50" r="50" />
+    <circle  ${
+      cool ? 'style="filter: hue-rotate(270deg);"' : ""
+    }  fill="${color}" cx="50" cy="50" r="50" />
   </svg>`;
 }
 
@@ -107,7 +110,6 @@ function SVGForum(color) {
 function SVGCarrot(color) {
   return `
     
-  <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
   <svg height="100%" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 512 512" xml:space="preserve">
@@ -162,14 +164,16 @@ function SVGCarrot(color) {
     </svg>
 `;
 }
-function IconFromSVGs(list) {
-  return (
-    "data:image/svg+xml;base64," +
-    btoa(`<?xml version="1.0" encoding="iso-8859-1"?>
-    <svg xmlns="http://www.w3.org/2000/svg">
-      ${list.join("\n")}
-    </svg>`)
-  );
+
+function StackSvgsOnTopEachOther(list) {
+  return `<?xml version="1.0" encoding="iso-8859-1"?>
+  <svg xmlns="http://www.w3.org/2000/svg">
+    ${list.join("\n")}
+  </svg>`;
+}
+
+function IconFromSVGs(svg) {
+  return "data:image/svg+xml;base64," + btoa(svg);
 }
 function CreateSyndicateForum(tabobj, groupid) {
   const opts = { url: "/SyndicateForum/index.html", index: tabobj.index };
@@ -192,12 +196,35 @@ function CreateSyndicateForum(tabobj, groupid) {
             console.log("highlight first member", [tabobj.index + 1])
           );
         const color = groups[groupid].color;
-        const svg = IconFromSVGs([SVGForum(color), SVGCarrot(color)]);
+        const svg = IconFromSVGs(
+          StackSvgsOnTopEachOther([
+            SVGCircle(color, true),
+            SVGForum(color),
+            SVGCarrot(color),
+          ])
+        );
         const name = groups[groupid].name;
         const msgToTab = { type: "update-syndicate-forum", svg, name, color };
         tabs.sendMessage(syntab.id, JSON.stringify(msgToTab));
+
+        // SpinAroundInfinetely(groupid);
       });
   });
+}
+
+function SpinAroundInfinetely(tabid, color) {
+  var counter = 0;
+  setInterval(() => {
+    console.log("asdasdsad");
+    browser.tabs.sendMessage(
+      tabid,
+      JSON.stringify({
+        type: "update-syndicate-forum-icon",
+        svg: IconFromSVGs(SVGRotateNoG(SVGCarrot(color), counter % 360)),
+      })
+    );
+    counter++;
+  }, 50);
 }
 
 function CreateGroup(name, color) {
@@ -207,7 +234,7 @@ function CreateGroup(name, color) {
   if (groups[id]) return console.warn(`Group: ${name} already exists: abort`);
 
   groups[id] = { name, color, tabs: [] };
-  const svg = IconFromSVGs([SVGCarrot(color)]);
+  const svg = IconFromSVGs(SVGCarrot(color));
   CreateMenuItem(name, { icons: { 16: svg, 32: svg } });
 
   return id;
@@ -221,7 +248,7 @@ function UpdateGroupForTab(tabid, groupid) {
 
   groups[groupid].tabs.push(tabid);
 
-  const svg = IconFromSVGs([SVGCarrot(groups[groupid].color)]);
+  const svg = IconFromSVGs(SVGCarrot(groups[groupid].color));
   const msgToTab = { type: "update-group", svg };
   browser.tabs.sendMessage(tabid, JSON.stringify(msgToTab));
 }
@@ -418,14 +445,14 @@ var last_highlight = [];
 var triggered_by_me = false;
 function onHighlightedSelectEntireSyndicate({ tabIds, windowId }) {
   if (triggered_by_me) return (triggered_by_me = !triggered_by_me);
-  console.log("highglight");
+  // console.log("highglight");
   if (JSON.stringify(last_highlight) == JSON.stringify(tabIds)) {
     highlight_fuck = true;
     return console.log("just focus changed, not highilight");
   }
   last_highlight = tabIds;
-  console.log("real highligjht");
-  console.log(tabIds);
+  // console.log("real highligjht");
+  // console.log(tabIds);
 
   if (tabIds.length != 2) {
     highlight_fuck = false;
@@ -451,4 +478,37 @@ function onHighlightedSelectEntireSyndicate({ tabIds, windowId }) {
   tabs.highlight({ tabs: arr }).catch(() => {
     console.log("highlight fuck");
   });
+}
+
+function HandleTakeFocusFromSyndicate(gid, tin, ptin) {
+  // highlight next after the group
+  const syn = groups[gid].syndicate_forum_tab;
+  const _tabs = groups[gid].tabs;
+
+  const next_tab_index = syn.index + _tabs.length + 1;
+  const prev_tab_index = syn.index - 1;
+
+  tabs.highlight({ tabs: [next_tab_index] }).catch(() => {
+    // if no tab after the syndicate is present
+    // use chrome groups behaviour: highlight tab before syndicate forum
+    tabs
+      .highlight({ tabs: [prev_tab_index] })
+      .catch(() => console.log("tab before syn is broken"));
+  });
+}
+
+function UpdateIconForHideShowStatus(gid) {
+  var svg = "";
+
+  if (groups[gid].hidden)
+    svg = IconFromSVGs(SVGRotateNoG(SVGCarrot(groups[gid].color), 180));
+  else svg = IconFromSVGs(SVGRotateNoG(SVGCarrot(groups[gid].color), 270));
+
+  browser.tabs.sendMessage(
+    groups[gid].syndicate_forum_tab.id,
+    JSON.stringify({
+      type: "update-syndicate-forum-icon",
+      svg,
+    })
+  );
 }

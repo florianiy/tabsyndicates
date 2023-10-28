@@ -7,7 +7,7 @@ function JustNeedAnObj(obj) {
     const newTitle = document.head.querySelector("title");
     newTitle.textContent = obj.name;
 
-    const newIcon = document.createElement("link");
+    window.newIcon = document.createElement("link");
     newIcon.setAttribute("rel", "shortcut icon");
     newIcon.setAttribute("href", obj.svg);
     newIcon.setAttribute("type", "image/x-icon");
@@ -16,5 +16,8 @@ function JustNeedAnObj(obj) {
     const span = document.querySelector("#name");
     span.textContent = obj.name;
     span.style.color = obj.color;
+  }
+  if ((obj.type = "update-syndicate-forum-icon")) {
+    newIcon.setAttribute("href", obj.svg);
   }
 }

@@ -20,6 +20,8 @@ browser.runtime.onMessage.addListener((MSG) => {
     syg.curIcon = CreateFaviconElement(obj.svg);
     document.head.append(syg.curIcon);
     console.log("success");
+  } else if (obj.type == "update-syndicate-forum-icon") {
+    document.head.append(CreateFaviconElement(obj.svg));
   } else if (obj.type == "restore-favicon") {
     syg.curIcon.remove();
 
