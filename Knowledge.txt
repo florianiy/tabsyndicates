@@ -33,3 +33,10 @@ Uncaught (in promise) Error: Could not establish connection. Receiving end does 
 
 cand deschizi context menu, firefox daca apesi pe tastatura da highlight la comanda care incepe cu 
 litera care ai apasat=o
+
+
+daca creezi un window cu un url array se va scoate bara aia de sus noice
+  browser.windows.create({
+    // url: "/SyndicateCreator/index.html",
+    url: ["/SyndicateCreator/index.html", "https://addons.mozilla.org"],
+  }

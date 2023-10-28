@@ -1,5 +1,6 @@
 `
-
+poate e mai bine sa pui toggle pe rotita
+si drag pe mouse click and drag
 
 deci forumul este de toggle by default
 dar daca apesi o tasta gen ctrl da switch la 
