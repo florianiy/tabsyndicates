@@ -1,22 +1,8 @@
-const s = localStorage.getItem("last-closed");
-const oo = JSON.parse(s);
-
-var first_time = true;
-
-if (oo) {
-  console.log("used local host");
-  JustNeedAnObj(oo, "from ls");
-  localStorage.removeItem("last-closed");
-}
-
 browser.runtime.onMessage.addListener((msg) => {
-  window.obj = JSON.parse(msg);
-  if (!oo) JustNeedAnObj(obj, "from runtime");
+  JustNeedAnObj(JSON.parse(msg), "from runtime");
 });
 
-function JustNeedAnObj(obj, msg) {
-  console.log(msg);
-
+function JustNeedAnObj(obj) {
   if (obj.type == "update-syndicate-forum") {
     const newTitle = document.head.querySelector("title");
     newTitle.textContent = obj.name;
@@ -32,7 +18,3 @@ function JustNeedAnObj(obj, msg) {
     span.style.color = obj.color;
   }
 }
-
-window.addEventListener("beforeunload", (e) => {
-  localStorage.setItem("last-closed", JSON.stringify(obj));
-});
