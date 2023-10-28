@@ -30,5 +30,5 @@ function AutomaticCreateSyndicateWithMembers(tabs) {
   }
 }
 
-// CreateTabs(syndicate_decisions.AUTOMATION.TAB_CREATION_PER_LOAD || 0);
-// browser.tabs.query({}).then(AutomaticCreateSyndicateWithMembers);
+CreateTabs(syndicate_decisions.AUTOMATION.TAB_CREATION_PER_LOAD || 0);
+browser.tabs.query({}).then(AutomaticCreateSyndicateWithMembers);

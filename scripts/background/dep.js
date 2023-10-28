@@ -206,12 +206,35 @@ function RemoveTabFromGroup(tabid, groupid) {
   groups[groupid].tabs = groups[groupid].tabs.filter((it) => it != tabid);
 }
 
-function ToggleSyndicateHide(groupid, cb = () => {}) {
-  tabs[groups[groupid].hidden ? "show" : "hide"](groups[groupid].tabs)
-    .then(cb)
-    .catch(() => {
+function ToggleSyndicateHide(groupid) {
+  const _tabs = groups[groupid].tabs;
+  var i = 0;
+
+  var time = groups[groupid]?.show_hide_delay || 700;
+
+  if (groups[groupid].hidden) {
+    tabs.show(_tabs[i++]).catch(() => {
       console.log("togle hide, invalid tab id");
     });
+    const iid = setInterval(() => {
+      if (i >= _tabs.length) return clearInterval(iid);
+      tabs.show(_tabs[i++]).catch(() => {
+        console.log("togle hide, invalid tab id");
+      });
+    }, time / (_tabs.length - 1));
+  } else {
+    i = _tabs.length - 1;
+    tabs.hide(_tabs[i--]).catch(() => {
+      console.log("togle hide, invalid tab id");
+    });
+    const iid = setInterval(() => {
+      if (i < 0) return clearInterval(iid);
+      tabs.hide(_tabs[i--]).catch(() => {
+        console.log("togle hide, invalid tab id");
+      });
+    }, time / (_tabs.length - 1));
+  }
+
   groups[groupid].hidden = !groups[groupid].hidden;
 }
 

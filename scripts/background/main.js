@@ -39,14 +39,19 @@ OnSyndicateForumFocus((gid, tid, ptid) => {
   //   return console.warn("closed forum due to inactivity");
   //
 
-  ToggleSyndicateHide(gid, () => {
-    // highlight next after the group
-    const index =
-      groups[gid].syndicate_forum_tab.index + groups[gid].tabs.length + 1;
-    tabs.highlight({
+  ToggleSyndicateHide(gid);
+  // highlight next after the group
+  const index =
+    groups[gid].syndicate_forum_tab.index + groups[gid].tabs.length + 1;
+  tabs
+    .highlight({
       tabs: [index],
+    })
+    .catch(() => {
+      // if no tab after the syndicate is present
+      // use chrome groups behaviour: highlight tab before syndicate forum
+      tabs.highlight({ tabs: [groups[gid].syndicate_forum_tab.index - 1] });
     });
-  });
 });
 
 // the idea is that when you are in a tab from a syndicate you
