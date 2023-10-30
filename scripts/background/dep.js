@@ -258,6 +258,9 @@ function RemoveTabFromGroup(tabid, groupid) {
 }
 
 function ToggleSyndicateHide(groupid) {
+  // when it hides the syndicate the next tab gets focused before animation finishes
+  // and this causes that focused tab to move when the tabs reallly close ___pls_solve
+
   const _tabs = groups[groupid].tabs;
   var i = 0;
 
@@ -267,11 +270,23 @@ function ToggleSyndicateHide(groupid) {
     tabs.show(_tabs[i++]).catch(() => {
       console.log("togle hide, invalid tab id");
     });
+    tabs
+      .highlight({ tabs: [groups[groupid].syndicate_forum_tab.index + i] })
+      .then(() =>
+        tabs.highlight({ tabs: [groups[groupid].syndicate_forum_tab.index] })
+      );
     const iid = setInterval(() => {
       if (i >= _tabs.length) return clearInterval(iid);
       tabs.show(_tabs[i++]).catch(() => {
         console.log("togle hide, invalid tab id");
       });
+      tabs
+        .highlight({
+          tabs: [groups[groupid].syndicate_forum_tab.index + i],
+        })
+        .then(() =>
+          tabs.highlight({ tabs: [groups[groupid].syndicate_forum_tab.index] })
+        );
     }, time / (_tabs.length - 1));
   } else {
     i = _tabs.length - 1;
