@@ -4,13 +4,30 @@ const spin_forever = CreateMenuItem("Spin around forever");
 const add_to_group_id = CreateMenuItem("Add to group");
 const restore_favicon = CreateMenuItem("Restore favicon");
 
-menus.onClicked.addListener(OnMenuItemClicked);
-browser.tabs.onMoved.addListener(MoveTabsWithTheirForum);
-browser.tabs.onMoved.addListener(onMoveUpdateSyndicateForumsIndex);
-browser.tabs.onMoved.addListener(onMoveOutOfBoundsRemoveFromSyndicate);
-browser.tabs.onMoved.addListener(onMoveInBoundsIncludeTabInSyndicate);
+browser.menus.onClicked.addListener(OnMenuItemClicked);
+
+browser.tabs.onMoved.addListener((tabid, { fromIndex, toIndex }) => {
+  if (self_imposed_move_event) return;
+
+  if (isTabSyndicate(tabid)) {
+    const group = groups[whatGidGroupAmIIn(tabid)];
+    // it also updates the index on the forum syndicate
+    MoveTabsWithTheirForum(group, fromIndex, toIndex);
+  } else {
+    if (isInbounds(toIndex)) {
+      UpdateGroupForTab(tabid, getGidBounds(toIndex));
+    } else if (isOutbounds(toIndex)) {
+      const gid = getHisGidIfAny(tabid);
+      if (gid) {
+        RemoveTabFromGroup(tabid, gid);
+        browser.tabs.sendMessage(tabid, `{ "type": "restore-favicon" }`);
+      }
+    }
+  }
+});
+
 browser.tabs.onRemoved.addListener(onTabRemovedDeleteRecords);
-browser.tabs.onHighlighted.addListener(onHighlightedSelectEntireSyndicate);
+// browser.tabs.onHighlighted.addListener(onHighlightedSelectEntireSyndicate);
 
 onWindowClosing(() => {
   // todo remove all stuff and save to storage order of tabs and their groups

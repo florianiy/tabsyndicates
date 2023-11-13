@@ -22,6 +22,7 @@
   "background": {
     "scripts": [
       "./scripts/background/syndicate-board.js",
+      "./scripts/background/icons.dep.js",
       "./scripts/background/dep.js",
       "./scripts/background/popup.js",
       "./scripts/background/main.js",
