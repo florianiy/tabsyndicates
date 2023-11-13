@@ -10,13 +10,16 @@ browser.tabs.onMoved.addListener((tabid, { fromIndex, toIndex }) => {
   if (self_imposed_move_event) return;
 
   if (isTabSyndicate(tabid)) {
+    console.log("Moved Syndicate");
     const group = groups[whatGidGroupAmIIn(tabid)];
     // it also updates the index on the forum syndicate
     MoveTabsWithTheirForum(group, fromIndex, toIndex);
   } else {
     if (isInbounds(toIndex)) {
+      console.log("Moved Inbounds");
       UpdateGroupForTab(tabid, getGidBounds(toIndex));
     } else if (isOutbounds(toIndex)) {
+      console.log("Moved Outbounds");
       const gid = getHisGidIfAny(tabid);
       if (gid) {
         RemoveTabFromGroup(tabid, gid);

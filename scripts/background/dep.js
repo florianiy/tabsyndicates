@@ -207,7 +207,7 @@ function ToggleSyndicateHide(groupid) {
         .then(() => {
           // just +i and not +i+1 cuz we do a i++ before
           browser.tabs.highlight({ tabs: [syn.index + i] }).then(() => {
-            if (i >= tabs.length) HandleTakeFocusFromSyndicate(groupid);
+            HandleTakeFocusFromSyndicate(groupid);
           });
         });
 
