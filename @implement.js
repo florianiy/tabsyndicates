@@ -13,6 +13,7 @@
 `@bugs`;
 {
   /*
+  cand creezi grupa cu acelasi nume se fute aplicatia
   e bugul ala ca dispar taburi uneori vezi cum poti sa dai exploit la asta
   forums can be membru in alt syndicate 
 
