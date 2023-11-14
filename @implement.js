@@ -1,6 +1,9 @@
 ` @todo`;
 {
   /*
+
+  remove the id being bound to the syndicate name, cuz 
+    it caused a lot of pain to implement syndicate name change
   updated real time title + color when create/edit syndicate_forum  
   save acros browser reload
   multiple windows support
