@@ -4,7 +4,7 @@ localStorage.setItem("deploy-counter", JSON.stringify(counter + 1));
 
 const syndicate_decisions = {
   AUTOMATION: {
-    ENABLE: false,
+    ENABLE: true,
     TAB_CREATION_PER_LOAD: 10,
     MAX_TABS: 30,
     CREATE_SYNDICATE: true,

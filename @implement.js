@@ -26,6 +26,7 @@
 `@hmm`;
 {
   /*  
+
   ?delete syndicate on last member removed? 
   ?better toggle pe rotita? si drag pe mouse (click and drag)?
 

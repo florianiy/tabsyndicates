@@ -175,7 +175,7 @@ function UpdateGroupForTab(tabid, groupid) {
 
   groups[groupid].tabs.push(tabid);
 
-  const svg = IconFromSVGs(SVGCarrot(groups[groupid].color));
+  const svg = SVGCarrotComfy(groups[groupid].color);
   const msgToTab = { type: "update-group", svg };
   browser.tabs.sendMessage(tabid, JSON.stringify(msgToTab));
 }
