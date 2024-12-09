@@ -2,8 +2,7 @@
 {
   /*
 
-  remove the id being bound to the syndicate name, cuz 
-    it caused a lot of pain to implement syndicate name change
+  remove the id being bound to the syndicate name, hard to implement syndicate name change
   updated real time title + color when create/edit syndicate_forum  
   save acros browser reload
   multiple windows support
@@ -16,8 +15,8 @@
 `@bugs`;
 {
   /*
-  cand creezi grupa cu acelasi nume se fute aplicatia
-  e bugul ala ca dispar taburi uneori vezi cum poti sa dai exploit la asta
+  cand creezi grupa cu acelasi nume face conflict
+  ---e bugul ala ca dispar taburi uneori vezi cum poti sa dai exploit la asta
   forums can be membru in alt syndicate 
 
 */
@@ -46,17 +45,5 @@
       // Note: Not waiting for returned promise.
       browser.menus.refresh();
     });
-*/
-}
-
-`@done`;
-{
-  /*
-  repara bugurile cu nu poate sa dea focus ca e prea in dreapta
-  listen for tab close to potentially remove it from any group
-  sa se invarta un morcov ca loading stuff
-    si sa arate drept asa ----> daca sunt deschise
-    si in sus daca sunt inchise
-  
 */
 }

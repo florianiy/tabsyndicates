@@ -40,3 +40,18 @@ daca creezi un window cu un url array se va scoate bara aia de sus noice
     // url: "/SyndicateCreator/index.html",
     url: ["/SyndicateCreator/index.html", "https://addons.mozilla.org"],
   }
+
+
+  Hidden tabs keep their index
+ids in onHighlighed are in the order of their index 
+try to hide all ALLL ALLL tabs
+
+contextualIdentities[containers] issues
+- cookies are not shared outside
+- only 10 colors to chose
+- have to recreate tab just to assign it to the container
+
+
+
+
+

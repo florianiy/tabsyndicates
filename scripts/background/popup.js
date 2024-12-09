@@ -8,12 +8,8 @@ class Popup {
     var that = this;
     browser.windows
       .create({
-        url: [
-          this.url,
-          this.url,
-          // this.url,
-          // this.url,
-        ],
+        url: this.url,
+        //[ this.url, this.url] hack,
         type: "popup",
         height: 150,
         width: 250,
